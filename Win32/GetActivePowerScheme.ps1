@@ -32,3 +32,4 @@ public class ActivePowerScheme
 '@
 
 $ActivePowerSchemeGuid = [ActivePowerScheme]::GetGuid()
+$ActivePowerSchemeGuid

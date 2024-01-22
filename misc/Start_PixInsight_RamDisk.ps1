@@ -45,6 +45,14 @@ Function Remove-RamDisks{
     }
 }
 
+Function Get-Choice{
+    $choice = Read-Host "Enter 'x' to start removing drives"
+    Switch($choice){
+        x {}
+        Default {Get-Choice}
+    }
+}
+
 Function Show-ExitPrompt{
     Write-Host -NoNewLine "`nPress any key to exit ..." -ForegroundColor Yellow
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
@@ -66,11 +74,14 @@ If(!$initError){
     If($null -ne $PI_ID){
         Write-Host "Got PixInsight PID - $($PI_ID)" -ForegroundColor Green
         Write-Host "`n>>> Waiting for PixInsight to exit, please do not close shell ..." -ForegroundColor Yellow
-    }
-    Wait-Process $PI_ID
-    
-    Write-Host "`nPixInsight exited`nSleeping for 10 seconds before removing drives ...`n" -ForegroundColor Yellow
-    Start-Sleep -Seconds 10
+        Wait-Process $PI_ID
+        Write-Host "`nPixInsight exited`nSleeping for 10 seconds before removing drives ...`n" -ForegroundColor Yellow
+        Start-Sleep -Seconds 10
+    }Else{
+        Write-Host "Couldn't get PixInsight PID" -ForegroundColor Red
+        Write-Host "`nTo start removing drives, enter 'x'. Make sure PixInsight is not running, otherwise close after work." -ForegroundColor Red
+        Get-Choice
+    }    
     Remove-RamDisks
     Show-ExitPrompt
 }Else{
